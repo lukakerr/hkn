@@ -20,28 +20,20 @@ func NewClient() *Client {
 
 // Get a single item given an id
 func (c *Client) GetItem(id int) (Item, error) {
-	item, err := GetItem(id, c.BaseURL)
-
-	return item, err
+	return GetItem(id, c.BaseURL)
 }
 
 // Get a slice of items given a number of ids
 func (c *Client) GetItems(ids []int) (Items, error) {
-	items, err := GetItems(ids, c.BaseURL)
-
-	return items, err
+	return GetItems(ids, c.BaseURL)
 }
 
 // Get a user given an id
 func (c *Client) GetUser(id string) (User, error) {
-	user, err := GetUser(id, c.BaseURL)
-
-	return user, err
+	return GetUser(id, c.BaseURL)
 }
 
 // Login a user given a username and password
 func (c *Client) Login(username string, password string) (*http.Cookie, error) {
-	cookie, err := Login(username, password, c.WebURL)
-
-	return cookie, err
+	return Login(username, password, c.WebURL)
 }
