@@ -28,9 +28,14 @@ func (c *Client) GetItems(ids []int) (Items, error) {
 	return GetItems(ids, c.BaseURL)
 }
 
-// Get a slice of items given a number of ids
+// Get the most recent item id
 func (c *Client) GetMaxItemId() (int, error) {
 	return GetMaxItemId(c.BaseURL)
+}
+
+// Get the latest item and profile updates
+func (c *Client) GetUpdates() (Updates, error) {
+	return GetUpdates(c.BaseURL)
 }
 
 // Get a user given an id

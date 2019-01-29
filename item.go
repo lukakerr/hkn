@@ -74,6 +74,7 @@ func GetItems(ids []int, url string) (Items, error) {
 	return items, nil
 }
 
+// Get the most recent item id
 func GetMaxItemId(url string) (int, error) {
 	reqUrl := fmt.Sprintf("%s/%s", url, "maxitem")
 

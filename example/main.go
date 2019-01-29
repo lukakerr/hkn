@@ -12,9 +12,10 @@ var ids = []int{8869, 8908, 8881, 10403, 9125}
 func main() {
 	client := hkn.NewClient()
 
-	// GetItem(client)
+	GetItem(client)
 	// GetItems(client)
-	GetMaxItemId(client)
+	// GetMaxItemId(client)
+	// GetUpdates(client)
 	// GetUser(client)
 	// Login(client)
 }
@@ -52,6 +53,17 @@ func GetMaxItemId(client *hkn.Client) {
 	}
 
 	fmt.Println(id)
+}
+
+func GetUpdates(client *hkn.Client) {
+	updates, err := client.GetUpdates()
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Printf("%+v\n", updates)
 }
 
 func GetUser(client *hkn.Client) {

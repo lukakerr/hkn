@@ -117,3 +117,31 @@ func TestGetMaxItemId(t *testing.T) {
 		t.Errorf("GetMaxItemId() returned %+v, was expecting %+v", id, expected)
 	}
 }
+
+func TestGetUpdates(t *testing.T) {
+	setup()
+	defer teardown()
+
+	jsonUpdates := `{
+                "items" : [8423305, 8420805, 8423379, 8422504],
+                "profiles" : ["thefox", "mdda", "plinkplonk", "GBond", "rqebmm", "neom"]
+        }`
+
+	mux.HandleFunc("/updates.json", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, jsonUpdates)
+	})
+
+	var expected Updates
+
+	_ = json.Unmarshal([]byte(jsonUpdates), &expected)
+
+	updates, err := client.GetUpdates()
+
+	if err != nil {
+		t.Errorf("Error for GetUpdates() should have been nil. Was: %v", err)
+	}
+
+	if !reflect.DeepEqual(updates, expected) {
+		t.Errorf("GetUpdates() returned %+v, was expecting %+v", updates, expected)
+	}
+}
