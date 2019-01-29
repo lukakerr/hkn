@@ -71,3 +71,18 @@ func GetItems(ids []int, url string) (Items, error) {
 
 	return items, nil
 }
+
+func GetMaxItemId(url string) (int, error) {
+	reqUrl := fmt.Sprintf("%s/%s", url, "maxitem")
+
+	resp, err := GetBody(reqUrl)
+
+	var id int
+
+	if err != nil {
+		return id, err
+	}
+
+	err = json.Unmarshal(resp, &id)
+	return id, err
+}

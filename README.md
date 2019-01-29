@@ -10,7 +10,7 @@ An item refers to either a story, comment, ask, job, poll or poll part
 
 - [x] Get a single item
 - [x] Get multiple items
-- [ ] Get largest item id
+- [x] Get largest item id
 - [ ] Get top 500 new, top and best stories
 - [ ] Get top 200 ask, show and job stories
 - [ ] Get changed items and profiles
@@ -70,6 +70,10 @@ item, err := client.GetItem(8869)
 // Get multiple items by ids
 // Returns ([]Item, error)
 items, err := client.GetItems([]int{8869, 8908, 8881, 10403, 9125})
+
+// Get max item id
+// Returns (int, error)
+id, err := client.GetMaxItemId()
 
 // Get a user by id
 // Returns (User, error)

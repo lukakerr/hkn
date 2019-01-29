@@ -92,3 +92,28 @@ func TestGetUser(t *testing.T) {
 		t.Errorf("GetUser('jl') returned %+v, was expecting %+v", user, expected)
 	}
 }
+
+func TestGetMaxItemId(t *testing.T) {
+	setup()
+	defer teardown()
+
+	maxItem := `123456`
+
+	mux.HandleFunc("/maxitem.json", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, maxItem)
+	})
+
+	var expected int
+
+	_ = json.Unmarshal([]byte(maxItem), &expected)
+
+	id, err := client.GetMaxItemId()
+
+	if err != nil {
+		t.Errorf("Error for GetMaxItemId() should have been nil. Was: %v", err)
+	}
+
+	if !reflect.DeepEqual(id, expected) {
+		t.Errorf("GetMaxItemId() returned %+v, was expecting %+v", id, expected)
+	}
+}

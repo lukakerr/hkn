@@ -28,6 +28,11 @@ func (c *Client) GetItems(ids []int) (Items, error) {
 	return GetItems(ids, c.BaseURL)
 }
 
+// Get a slice of items given a number of ids
+func (c *Client) GetMaxItemId() (int, error) {
+	return GetMaxItemId(c.BaseURL)
+}
+
 // Get a user given an id
 func (c *Client) GetUser(id string) (User, error) {
 	return GetUser(id, c.BaseURL)
