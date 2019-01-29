@@ -11,8 +11,8 @@ An item refers to either a story, comment, ask, job, poll or poll part
 - [x] Get a single item
 - [x] Get multiple items
 - [x] Get largest item id
-- [ ] Get top 500 new, top and best stories
-- [ ] Get top 200 ask, show and job stories
+- [x] Get top 500 new, top and best stories (or a number >= 0, <= 500)
+- [x] Get top 200 ask, show and job stories (or a number >= 0, <= 200)
 - [x] Get changed items and profiles
 - [x] Get a user
 - [x] Login a user
@@ -62,28 +62,86 @@ client := hkn.NewClient()
 
 Various methods can then be then called on the client:
 
+**Get a single item by id**
+
 ```go
-// Get a single item by id
 // Returns (Item, error)
 item, err := client.GetItem(8869)
+```
 
-// Get multiple items by ids
+**Get multiple items by ids**
+
+```go
 // Returns ([]Item, error)
 items, err := client.GetItems([]int{8869, 8908, 8881, 10403, 9125})
+```
 
-// Get max item id
+**Get max item id**
+
+```go
 // Returns (int, error)
 id, err := client.GetMaxItemId()
+```
 
-// Get the latest item and profile updates
+**Get the latest item and profile updates**
+
+```go
 // Returns (Updates, error)
 updates, err := client.GetUpdates()
+```
 
-// Get a user by id
+**Get top stories given a number**
+
+```go
+// Returns ([]int, error)
+stories, err := client.GetTopStories(20)
+```
+
+**Get new stories given a number**
+
+```go
+// Returns ([]int, error)
+stories, err := client.GetNewStories(20)
+```
+
+**Get best stories given a number**
+
+```go
+// Returns ([]int, error)
+stories, err := client.GetBestStories(20)
+```
+
+**Get latest ask stories given a number**
+
+```go
+// Returns ([]int, error)
+stories, err := client.GetLatestAskStories(20)
+```
+
+**Get latest show stories given a number**
+
+```go
+// Returns ([]int, error)
+stories, err := client.GetLatestShowStories(20)
+```
+
+**Get latest job stories given a number**
+
+```go
+// Returns ([]int, error)
+stories, err := client.GetLatestJobStories(20)
+```
+
+**Get a user by id**
+
+```go
 // Returns (User, error)
 user, err := client.GetUser("jl")
+```
 
-// Login a user with a username and password
+**Login a user with a username and password**
+
+```go
 // The cookie returned is used for actions that require a user to be logged in
 // Returns (*http.Cookie, error)
 cookie, err := client.Login("username", "password")

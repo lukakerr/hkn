@@ -47,3 +47,33 @@ func (c *Client) GetUser(id string) (User, error) {
 func (c *Client) Login(username string, password string) (*http.Cookie, error) {
 	return Login(username, password, c.WebURL)
 }
+
+// Get top stories given a number
+func (c *Client) GetTopStories(number int) ([]int, error) {
+	return GetTopStories(number, c.BaseURL)
+}
+
+// Get new stories given a number
+func (c *Client) GetNewStories(number int) ([]int, error) {
+	return GetNewStories(number, c.BaseURL)
+}
+
+// Get best stories given a number
+func (c *Client) GetBestStories(number int) ([]int, error) {
+	return GetBestStories(number, c.BaseURL)
+}
+
+// Get latest ask stories given a number
+func (c *Client) GetLatestAskStories(number int) ([]int, error) {
+	return GetLatestAskStories(number, c.BaseURL)
+}
+
+// Get latest show stories given a number
+func (c *Client) GetLatestShowStories(number int) ([]int, error) {
+	return GetLatestShowStories(number, c.BaseURL)
+}
+
+// Get latest job stories given a number
+func (c *Client) GetLatestJobStories(number int) ([]int, error) {
+	return GetLatestJobStories(number, c.BaseURL)
+}

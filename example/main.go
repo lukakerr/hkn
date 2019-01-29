@@ -12,12 +12,18 @@ var ids = []int{8869, 8908, 8881, 10403, 9125}
 func main() {
 	client := hkn.NewClient()
 
-	GetItem(client)
+	// GetItem(client)
 	// GetItems(client)
 	// GetMaxItemId(client)
 	// GetUpdates(client)
 	// GetUser(client)
 	// Login(client)
+	// GetTopStories(client)
+	// GetNewStories(client)
+	// GetBestStories(client)
+	// GetLatestAskStories(client)
+	// GetLatestShowStories(client)
+	// GetLatestJobStories(client)
 }
 
 func GetItem(client *hkn.Client) {
@@ -87,4 +93,70 @@ func Login(client *hkn.Client) {
 	}
 
 	fmt.Println(cookie)
+}
+
+func GetTopStories(client *hkn.Client) {
+	stories, err := client.GetTopStories(50)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(stories)
+}
+
+func GetNewStories(client *hkn.Client) {
+	stories, err := client.GetNewStories(50)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(stories)
+}
+
+func GetBestStories(client *hkn.Client) {
+	stories, err := client.GetBestStories(50)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(stories)
+}
+
+func GetLatestAskStories(client *hkn.Client) {
+	stories, err := client.GetLatestAskStories(50)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(stories)
+}
+
+func GetLatestShowStories(client *hkn.Client) {
+	stories, err := client.GetLatestShowStories(50)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(stories)
+}
+
+func GetLatestJobStories(client *hkn.Client) {
+	stories, err := client.GetLatestJobStories(30)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(stories)
 }
