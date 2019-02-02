@@ -17,7 +17,7 @@ An item refers to either a story, comment, ask, job, poll or poll part
 - [x] Get a user
 - [x] Login a user
 - [x] Upvote an item
-- [ ] Unvote an item (only comments)
+- [x] Unvote an item (only comments)
 - [ ] Create an item
 - [ ] Search
   - [ ] Full text
@@ -153,6 +153,15 @@ cookie, err := client.Login("username", "password")
 ```go
 // Returns (bool, error)
 upvoted, err := client.Upvote(8869, cookie)
+```
+
+**Unvote an item (only comments)**
+
+> A cookie is required to unvote, get this from logging in
+
+```go
+// Returns (bool, error)
+unvoted, err := client.Unvote(8869, cookie)
 ```
 
 ### Running

@@ -118,19 +118,18 @@ func getActionAuth(url string, regex string, cookie *http.Cookie) (string, error
 	return "", errors.New("Could not get action URL")
 }
 
-// Upvote : Upvote an item given an id and a cookie
-func Upvote(id int, cookie *http.Cookie, url string) (bool, error) {
+func vote(id int, cookie *http.Cookie, url string, voteType string) (bool, error) {
 	reqURL := fmt.Sprintf("%s/%s?id=%d", url, "item", id)
-	upvoteRegex := fmt.Sprintf(voteURLRegex, "up", id)
+	upvoteRegex := fmt.Sprintf(voteURLRegex, voteType, id)
 
-	upvoteAuth, err := getActionAuth(reqURL, upvoteRegex, cookie)
+	voteAuth, err := getActionAuth(reqURL, upvoteRegex, cookie)
 
 	if err != nil {
 		return false, err
 	}
 
-	upvoteURL := fmt.Sprintf("%s/%s", url, upvoteAuth)
-	unescaped := html.UnescapeString(upvoteURL)
+	voteURL := fmt.Sprintf("%s/%s", url, voteAuth)
+	unescaped := html.UnescapeString(voteURL)
 
 	resp, err := GetBodyWithCookie(unescaped, cookie)
 
@@ -139,4 +138,14 @@ func Upvote(id int, cookie *http.Cookie, url string) (bool, error) {
 	}
 
 	return false, err
+}
+
+// Upvote : Upvote an item given an id and a cookie
+func Upvote(id int, cookie *http.Cookie, url string) (bool, error) {
+	return vote(id, cookie, url, "up")
+}
+
+// Unvote : Unvote a comment given an id and a cookie
+func Unvote(id int, cookie *http.Cookie, url string) (bool, error) {
+	return vote(id, cookie, url, "un")
 }

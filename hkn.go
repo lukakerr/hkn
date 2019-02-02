@@ -89,3 +89,8 @@ func (c *Client) GetLatestJobStories(number int) ([]int, error) {
 func (c *Client) Upvote(id int, cookie *http.Cookie) (bool, error) {
 	return Upvote(id, cookie, c.WebURL)
 }
+
+// Unvote : Unvote a comment given an id
+func (c *Client) Unvote(id int, cookie *http.Cookie) (bool, error) {
+	return Unvote(id, cookie, c.WebURL)
+}

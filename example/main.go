@@ -26,6 +26,7 @@ func main() {
 	// getLatestShowStories(client)
 	// getLatestJobStories(client)
 	// upvote(client)
+	// unvote(client)
 }
 
 func getItem(client *hkn.Client) {
@@ -171,7 +172,7 @@ func upvote(client *hkn.Client) {
 		return
 	}
 
-	upvoted, err := client.Upvote(8893, cookie)
+	upvoted, err := client.Upvote(ids[0], cookie)
 
 	if err != nil {
 		fmt.Println(err)
@@ -179,4 +180,22 @@ func upvote(client *hkn.Client) {
 	}
 
 	fmt.Println(upvoted)
+}
+
+func unvote(client *hkn.Client) {
+	cookie, err := client.Login("username", "password")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	unvoted, err := client.Unvote(ids[0], cookie)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(unvoted)
 }
