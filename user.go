@@ -7,8 +7,9 @@ import (
 	NetUrl "net/url"
 )
 
+// User : Struct representing a Hacker News user
 type User struct {
-	Id        string `json:"id"`
+	ID        string `json:"id"`
 	Delay     int    `json:"delay"`
 	Created   int32  `json:"created"`
 	Karma     int    `json:"karma"`
@@ -16,11 +17,11 @@ type User struct {
 	Submitted []int  `json:"submitted"`
 }
 
-// Get a user given an id
+// GetUser : Get a user given an id
 func GetUser(id string, url string) (User, error) {
-	reqUrl := fmt.Sprintf("%s/%s/%s", url, "user", id)
+	reqURL := fmt.Sprintf("%s/%s/%s", url, "user", id) + JSONSuffix
 
-	resp, err := GetBody(reqUrl)
+	resp, err := GetBody(reqURL)
 
 	var user User
 
@@ -32,16 +33,16 @@ func GetUser(id string, url string) (User, error) {
 	return user, err
 }
 
-// Login a user given a username and password
+// Login : Login a user given a username and password
 func Login(username string, password string, url string) (*http.Cookie, error) {
-	reqUrl := fmt.Sprintf("%s/%s", url, "login")
+	reqURL := fmt.Sprintf("%s/%s", url, "login")
 
 	body := NetUrl.Values{}
 	body.Set("acct", username)
 	body.Set("pw", password)
 	body.Set("goto", "news")
 
-	cookie, err := PostAndGetCookie(reqUrl, body)
+	cookie, err := PostAndGetCookie(reqURL, body)
 
 	return cookie, err
 }

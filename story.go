@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-// Given a number a limit and a url, fetch from the url and
+// GetNumber : Given a number a limit and a url, fetch from the url and
 // return the number requested if it is >= 0 and <= limit
 func GetNumber(number int, limit int, url string) ([]int, error) {
 	if number > limit || number < 0 {
@@ -14,7 +14,7 @@ func GetNumber(number int, limit int, url string) ([]int, error) {
 		return nil, errors.New(msg)
 	}
 
-	resp, err := GetBody(url)
+	resp, err := GetBody(url + JSONSuffix)
 
 	var top []int
 
@@ -35,37 +35,37 @@ func GetNumber(number int, limit int, url string) ([]int, error) {
 	return top[:number], nil
 }
 
-// Get top stories given a number
+// GetTopStories : Get top stories given a number
 func GetTopStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "topstories")
 	return GetNumber(number, 500, resource)
 }
 
-// Get new stories given a number
+// GetNewStories : Get new stories given a number
 func GetNewStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "newstories")
 	return GetNumber(number, 500, resource)
 }
 
-// Get best stories given a number
+// GetBestStories : Get best stories given a number
 func GetBestStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "beststories")
 	return GetNumber(number, 500, resource)
 }
 
-// Get latest ask stories given a number
+// GetLatestAskStories : Get latest ask stories given a number
 func GetLatestAskStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "askstories")
 	return GetNumber(number, 200, resource)
 }
 
-// Get latest show stories given a number
+// GetLatestShowStories : Get latest show stories given a number
 func GetLatestShowStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "showstories")
 	return GetNumber(number, 200, resource)
 }
 
-// Get latest job stories given a number
+// GetLatestJobStories : Get latest job stories given a number
 func GetLatestJobStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "jobstories")
 	return GetNumber(number, 200, resource)

@@ -2,12 +2,17 @@ package hkn
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"html"
+	"net/http"
+	"regexp"
 	"sync"
 )
 
+// Item : A Hacker News item
 type Item struct {
-	Id          int    `json:"id"`
+	ID          int    `json:"id"`
 	Deleted     bool   `json:"deleted"`
 	Type        string `json:"type"`
 	By          string `json:"by"`
@@ -24,13 +29,18 @@ type Item struct {
 	Descendants int    `json:"descendants"`
 }
 
+// Items : An array of items
 type Items []Item
 
-// Get an item given an id
-func GetItem(id int, url string) (Item, error) {
-	reqUrl := fmt.Sprintf("%s/%s/%d", url, "item", id)
+const (
+	voteURLRegex = "<a\\s+id='%s_%d'\\s+(?:[^>]*?\\s+)?href='([^']*)'"
+)
 
-	resp, err := GetBody(reqUrl)
+// GetItem : Get an item given an id
+func GetItem(id int, url string) (Item, error) {
+	reqURL := fmt.Sprintf("%s/%s/%d", url, "item", id) + JSONSuffix
+
+	resp, err := GetBody(reqURL)
 
 	var item Item
 
@@ -42,7 +52,7 @@ func GetItem(id int, url string) (Item, error) {
 	return item, err
 }
 
-// Get items given a slice of ids
+// GetItems : Get items given a slice of ids
 // This function is parallelised and thus does not guarantee order
 func GetItems(ids []int, url string) (Items, error) {
 	var (
@@ -74,11 +84,11 @@ func GetItems(ids []int, url string) (Items, error) {
 	return items, nil
 }
 
-// Get the most recent item id
-func GetMaxItemId(url string) (int, error) {
-	reqUrl := fmt.Sprintf("%s/%s", url, "maxitem")
+// GetMaxItemID : Get the most recent item id
+func GetMaxItemID(url string) (int, error) {
+	reqURL := fmt.Sprintf("%s/%s", url, "maxitem") + JSONSuffix
 
-	resp, err := GetBody(reqUrl)
+	resp, err := GetBody(reqURL)
 
 	var id int
 
@@ -88,4 +98,45 @@ func GetMaxItemId(url string) (int, error) {
 
 	err = json.Unmarshal(resp, &id)
 	return id, err
+}
+
+func getActionAuth(url string, regex string, cookie *http.Cookie) (string, error) {
+	resp, err := GetBodyWithCookie(url, cookie)
+
+	if err != nil {
+		return "", err
+	}
+
+	r := regexp.MustCompile(regex)
+
+	result := r.FindStringSubmatch(string(resp))
+
+	if len(result) == 2 {
+		return result[1], nil
+	}
+
+	return "", errors.New("Could not get action URL")
+}
+
+// Upvote : Upvote an item given an id and a cookie
+func Upvote(id int, cookie *http.Cookie, url string) (bool, error) {
+	reqURL := fmt.Sprintf("%s/%s?id=%d", url, "item", id)
+	upvoteRegex := fmt.Sprintf(voteURLRegex, "up", id)
+
+	upvoteAuth, err := getActionAuth(reqURL, upvoteRegex, cookie)
+
+	if err != nil {
+		return false, err
+	}
+
+	upvoteURL := fmt.Sprintf("%s/%s", url, upvoteAuth)
+	unescaped := html.UnescapeString(upvoteURL)
+
+	resp, err := GetBodyWithCookie(unescaped, cookie)
+
+	if err == nil && resp != nil {
+		return true, nil
+	}
+
+	return false, err
 }

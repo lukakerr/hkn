@@ -16,8 +16,7 @@ An item refers to either a story, comment, ask, job, poll or poll part
 - [x] Get changed items and profiles
 - [x] Get a user
 - [x] Login a user
-- [ ] Logout a user
-- [ ] Upvote an item
+- [x] Upvote an item
 - [ ] Unvote an item (only comments)
 - [ ] Create an item
 - [ ] Search
@@ -80,7 +79,7 @@ items, err := client.GetItems([]int{8869, 8908, 8881, 10403, 9125})
 
 ```go
 // Returns (int, error)
-id, err := client.GetMaxItemId()
+id, err := client.GetMaxItemID()
 ```
 
 **Get the latest item and profile updates**
@@ -145,6 +144,15 @@ user, err := client.GetUser("jl")
 // The cookie returned is used for actions that require a user to be logged in
 // Returns (*http.Cookie, error)
 cookie, err := client.Login("username", "password")
+```
+
+**Upvote an item**
+
+> A cookie is required to upvote, get this from logging in
+
+```go
+// Returns (bool, error)
+upvoted, err := client.Upvote(8869, cookie)
 ```
 
 ### Running

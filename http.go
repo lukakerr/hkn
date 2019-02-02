@@ -8,15 +8,15 @@ import (
 	"strings"
 )
 
-const SUFFIX = ".json"
-
 // Perform a GET request and return the response
-func Get(url string) (*http.Response, error) {
-	reqUrl := url + SUFFIX
-
+func get(url string, cookie *http.Cookie) (*http.Response, error) {
 	// Build the request
-	req, err := http.NewRequest("GET", reqUrl, nil)
+	req, err := http.NewRequest("GET", url, nil)
 	req.Close = true
+
+	if cookie != nil {
+		req.AddCookie(cookie)
+	}
 
 	if err != nil {
 		return nil, errors.New("Error fetching repository")
@@ -33,8 +33,43 @@ func Get(url string) (*http.Response, error) {
 	return resp, nil
 }
 
+// Get the content from a http response and close the response
+func getContent(resp *http.Response) ([]byte, error) {
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
+}
+
+// GetBody : Perform a GET request and return the body as a slice of bytes
+func GetBody(url string) ([]byte, error) {
+	resp, err := get(url, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return getContent(resp)
+}
+
+// GetBodyWithCookie : Perform a GET request with a cookie and return the body as a slice of bytes
+func GetBodyWithCookie(url string, cookie *http.Cookie) ([]byte, error) {
+	resp, err := get(url, cookie)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return getContent(resp)
+}
+
 // Perform a POST request and return the response
-func Post(url string, urlEncodedValues NetUrl.Values) (*http.Response, error) {
+func post(url string, urlEncodedValues NetUrl.Values) (*http.Response, error) {
 	req, err := http.NewRequest("POST", url, strings.NewReader(urlEncodedValues.Encode()))
 	req.Close = true
 
@@ -56,28 +91,9 @@ func Post(url string, urlEncodedValues NetUrl.Values) (*http.Response, error) {
 	return resp, nil
 }
 
-// Perform a GET request and return the body as a slice of bytes
-func GetBody(url string) ([]byte, error) {
-	resp, err := Get(url)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return body, nil
-}
-
-// Perform a POST request and return the first cookie in the response
+// PostAndGetCookie : Perform a POST request and return the first cookie in the response
 func PostAndGetCookie(url string, urlEncodedValues NetUrl.Values) (*http.Cookie, error) {
-	resp, err := Post(url, urlEncodedValues)
+	resp, err := post(url, urlEncodedValues)
 
 	if err != nil {
 		return &http.Cookie{}, err

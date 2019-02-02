@@ -107,7 +107,7 @@ func TestGetMaxItemId(t *testing.T) {
 
 	_ = json.Unmarshal([]byte(maxItem), &expected)
 
-	id, err := client.GetMaxItemId()
+	id, err := client.GetMaxItemID()
 
 	if err != nil {
 		t.Errorf("Error for GetMaxItemId() should have been nil. Was: %v", err)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/lukakerr/hkn"
 )
 
@@ -12,21 +13,22 @@ var ids = []int{8869, 8908, 8881, 10403, 9125}
 func main() {
 	client := hkn.NewClient()
 
-	// GetItem(client)
-	// GetItems(client)
-	// GetMaxItemId(client)
-	// GetUpdates(client)
-	// GetUser(client)
-	// Login(client)
-	// GetTopStories(client)
-	// GetNewStories(client)
-	// GetBestStories(client)
-	// GetLatestAskStories(client)
-	// GetLatestShowStories(client)
-	// GetLatestJobStories(client)
+	getItem(client)
+	// getItems(client)
+	// getMaxItemID(client)
+	// getUpdates(client)
+	// getUser(client)
+	// login(client)
+	// getTopStories(client)
+	// getNewStories(client)
+	// getBestStories(client)
+	// getLatestAskStories(client)
+	// getLatestShowStories(client)
+	// getLatestJobStories(client)
+	// upvote(client)
 }
 
-func GetItem(client *hkn.Client) {
+func getItem(client *hkn.Client) {
 	item, err := client.GetItem(ids[0])
 
 	if err != nil {
@@ -37,7 +39,7 @@ func GetItem(client *hkn.Client) {
 	fmt.Printf("%+v\n", item)
 }
 
-func GetItems(client *hkn.Client) {
+func getItems(client *hkn.Client) {
 	items, err := client.GetItems(ids)
 
 	if err != nil {
@@ -50,8 +52,8 @@ func GetItems(client *hkn.Client) {
 	}
 }
 
-func GetMaxItemId(client *hkn.Client) {
-	id, err := client.GetMaxItemId()
+func getMaxItemID(client *hkn.Client) {
+	id, err := client.GetMaxItemID()
 
 	if err != nil {
 		fmt.Println(err)
@@ -61,7 +63,7 @@ func GetMaxItemId(client *hkn.Client) {
 	fmt.Println(id)
 }
 
-func GetUpdates(client *hkn.Client) {
+func getUpdates(client *hkn.Client) {
 	updates, err := client.GetUpdates()
 
 	if err != nil {
@@ -72,7 +74,7 @@ func GetUpdates(client *hkn.Client) {
 	fmt.Printf("%+v\n", updates)
 }
 
-func GetUser(client *hkn.Client) {
+func getUser(client *hkn.Client) {
 	user, err := client.GetUser("jl")
 
 	if err != nil {
@@ -83,7 +85,7 @@ func GetUser(client *hkn.Client) {
 	fmt.Printf("%+v\n", user)
 }
 
-func Login(client *hkn.Client) {
+func login(client *hkn.Client) {
 	// You'll need to use an actual username and password here
 	cookie, err := client.Login("username", "password")
 
@@ -95,7 +97,7 @@ func Login(client *hkn.Client) {
 	fmt.Println(cookie)
 }
 
-func GetTopStories(client *hkn.Client) {
+func getTopStories(client *hkn.Client) {
 	stories, err := client.GetTopStories(50)
 
 	if err != nil {
@@ -106,7 +108,7 @@ func GetTopStories(client *hkn.Client) {
 	fmt.Println(stories)
 }
 
-func GetNewStories(client *hkn.Client) {
+func getNewStories(client *hkn.Client) {
 	stories, err := client.GetNewStories(50)
 
 	if err != nil {
@@ -117,7 +119,7 @@ func GetNewStories(client *hkn.Client) {
 	fmt.Println(stories)
 }
 
-func GetBestStories(client *hkn.Client) {
+func getBestStories(client *hkn.Client) {
 	stories, err := client.GetBestStories(50)
 
 	if err != nil {
@@ -128,7 +130,7 @@ func GetBestStories(client *hkn.Client) {
 	fmt.Println(stories)
 }
 
-func GetLatestAskStories(client *hkn.Client) {
+func getLatestAskStories(client *hkn.Client) {
 	stories, err := client.GetLatestAskStories(50)
 
 	if err != nil {
@@ -139,7 +141,7 @@ func GetLatestAskStories(client *hkn.Client) {
 	fmt.Println(stories)
 }
 
-func GetLatestShowStories(client *hkn.Client) {
+func getLatestShowStories(client *hkn.Client) {
 	stories, err := client.GetLatestShowStories(50)
 
 	if err != nil {
@@ -150,7 +152,7 @@ func GetLatestShowStories(client *hkn.Client) {
 	fmt.Println(stories)
 }
 
-func GetLatestJobStories(client *hkn.Client) {
+func getLatestJobStories(client *hkn.Client) {
 	stories, err := client.GetLatestJobStories(30)
 
 	if err != nil {
@@ -159,4 +161,22 @@ func GetLatestJobStories(client *hkn.Client) {
 	}
 
 	fmt.Println(stories)
+}
+
+func upvote(client *hkn.Client) {
+	cookie, err := client.Login("username", "password")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	upvoted, err := client.Upvote(8893, cookie)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(upvoted)
 }
