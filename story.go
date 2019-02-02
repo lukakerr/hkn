@@ -2,7 +2,6 @@ package hkn
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 )
 
@@ -10,8 +9,7 @@ import (
 // return the number requested if it is >= 0 and <= limit
 func GetNumber(number int, limit int, url string) ([]int, error) {
 	if number > limit || number < 0 {
-		msg := fmt.Sprintf("Invalid number. %d is not within the bounds of 0 and %d", number, limit)
-		return nil, errors.New(msg)
+		return nil, ErrInvalidNumber
 	}
 
 	resp, err := GetBody(url + JSONSuffix)

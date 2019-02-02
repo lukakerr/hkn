@@ -1,10 +1,9 @@
 package hkn
 
 import (
-	"errors"
 	"io/ioutil"
 	"net/http"
-	NetUrl "net/url"
+	NetURL "net/url"
 	"strings"
 )
 
@@ -19,7 +18,7 @@ func get(url string, cookie *http.Cookie) (*http.Response, error) {
 	}
 
 	if err != nil {
-		return nil, errors.New("Error fetching repository")
+		return nil, ErrFetching
 	}
 
 	client := &http.Client{}
@@ -69,9 +68,13 @@ func GetBodyWithCookie(url string, cookie *http.Cookie) ([]byte, error) {
 }
 
 // Perform a POST request and return the response
-func post(url string, urlEncodedValues NetUrl.Values) (*http.Response, error) {
+func post(url string, urlEncodedValues NetURL.Values, cookie *http.Cookie) (*http.Response, error) {
 	req, err := http.NewRequest("POST", url, strings.NewReader(urlEncodedValues.Encode()))
 	req.Close = true
+
+	if cookie != nil {
+		req.AddCookie(cookie)
+	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Access-Control-Allow-Origin", "*")
@@ -91,9 +94,20 @@ func post(url string, urlEncodedValues NetUrl.Values) (*http.Response, error) {
 	return resp, nil
 }
 
+// PostWithCookie : Perform a POST request with a cookie
+func PostWithCookie(url string, urlEncodedValues NetURL.Values, cookie *http.Cookie) ([]byte, error) {
+	resp, err := post(url, urlEncodedValues, cookie)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return getContent(resp)
+}
+
 // PostAndGetCookie : Perform a POST request and return the first cookie in the response
-func PostAndGetCookie(url string, urlEncodedValues NetUrl.Values) (*http.Cookie, error) {
-	resp, err := post(url, urlEncodedValues)
+func PostAndGetCookie(url string, urlEncodedValues NetURL.Values) (*http.Cookie, error) {
+	resp, err := post(url, urlEncodedValues, nil)
 
 	if err != nil {
 		return &http.Cookie{}, err
@@ -104,7 +118,7 @@ func PostAndGetCookie(url string, urlEncodedValues NetUrl.Values) (*http.Cookie,
 	cookies := resp.Cookies()
 
 	if len(cookies) == 0 {
-		return &http.Cookie{}, errors.New("Invalid username or password")
+		return &http.Cookie{}, ErrInvalidAuth
 	}
 
 	return cookies[0], nil

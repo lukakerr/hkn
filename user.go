@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	NetUrl "net/url"
+	NetURL "net/url"
 )
 
 // User : Struct representing a Hacker News user
@@ -37,7 +37,7 @@ func GetUser(id string, url string) (User, error) {
 func Login(username string, password string, url string) (*http.Cookie, error) {
 	reqURL := fmt.Sprintf("%s/%s", url, "login")
 
-	body := NetUrl.Values{}
+	body := NetURL.Values{}
 	body.Set("acct", username)
 	body.Set("pw", password)
 	body.Set("goto", "news")

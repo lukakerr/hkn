@@ -1,6 +1,7 @@
 package hkn
 
 import (
+	"errors"
 	"net/http"
 )
 
@@ -23,6 +24,23 @@ func NewClient() *Client {
 const (
 	// JSONSuffix : A JSON suffix for URLs
 	JSONSuffix = ".json"
+)
+
+var (
+	// ErrFetching : An error fetching a resource
+	ErrFetching = errors.New("Error fetching resource")
+
+	// ErrEmptyContent : An error that content provided is empty
+	ErrEmptyContent = errors.New("Content is empty")
+
+	// ErrInvalidAuth : An error authenticating
+	ErrInvalidAuth = errors.New("Invalid username or password")
+
+	// ErrFetchingActionURL : An error fetching an action URL
+	ErrFetchingActionURL = errors.New("Error fetching action URL")
+
+	// ErrInvalidNumber : An error that a number provided is invalid
+	ErrInvalidNumber = errors.New("Invalid number")
 )
 
 // GetItem : Get a single item given an id
@@ -93,4 +111,9 @@ func (c *Client) Upvote(id int, cookie *http.Cookie) (bool, error) {
 // Unvote : Unvote a comment given an id
 func (c *Client) Unvote(id int, cookie *http.Cookie) (bool, error) {
 	return Unvote(id, cookie, c.WebURL)
+}
+
+// Comment : Create a comment on an item given an id and content
+func (c *Client) Comment(id int, content string, cookie *http.Cookie) (bool, error) {
+	return Comment(id, content, cookie, c.WebURL)
 }

@@ -2,10 +2,10 @@ package hkn
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"html"
 	"net/http"
+	NetURL "net/url"
 	"regexp"
 	"sync"
 )
@@ -33,7 +33,8 @@ type Item struct {
 type Items []Item
 
 const (
-	voteURLRegex = "<a\\s+id='%s_%d'\\s+(?:[^>]*?\\s+)?href='([^']*)'"
+	voteURLRegex    = `<a\s+id=['"]%s_%d['"]\s+(?:[^>]*?\s+)?href=['"]([^'"]*)['"]`
+	commentURLRegex = `<input\s+type=['"]hidden['"]\s+name=['"]hmac['"]\s+(?:[^>]*?\s+)?value=['"]([^'"]*)['"]`
 )
 
 // GetItem : Get an item given an id
@@ -100,7 +101,7 @@ func GetMaxItemID(url string) (int, error) {
 	return id, err
 }
 
-func getActionAuth(url string, regex string, cookie *http.Cookie) (string, error) {
+func matchRegexFromBody(url string, regex string, cookie *http.Cookie) (string, error) {
 	resp, err := GetBodyWithCookie(url, cookie)
 
 	if err != nil {
@@ -115,14 +116,14 @@ func getActionAuth(url string, regex string, cookie *http.Cookie) (string, error
 		return result[1], nil
 	}
 
-	return "", errors.New("Could not get action URL")
+	return "", ErrFetchingActionURL
 }
 
 func vote(id int, cookie *http.Cookie, url string, voteType string) (bool, error) {
 	reqURL := fmt.Sprintf("%s/%s?id=%d", url, "item", id)
 	upvoteRegex := fmt.Sprintf(voteURLRegex, voteType, id)
 
-	voteAuth, err := getActionAuth(reqURL, upvoteRegex, cookie)
+	voteAuth, err := matchRegexFromBody(reqURL, upvoteRegex, cookie)
 
 	if err != nil {
 		return false, err
@@ -148,4 +149,35 @@ func Upvote(id int, cookie *http.Cookie, url string) (bool, error) {
 // Unvote : Unvote a comment given an id and a cookie
 func Unvote(id int, cookie *http.Cookie, url string) (bool, error) {
 	return vote(id, cookie, url, "un")
+}
+
+// Comment : Create a comment on an item given an id and content
+func Comment(id int, content string, cookie *http.Cookie, url string) (bool, error) {
+	if len(content) == 0 {
+		return false, ErrEmptyContent
+	}
+
+	reqURL := fmt.Sprintf("%s/%s?id=%d", url, "item", id)
+
+	commentAuth, err := matchRegexFromBody(reqURL, commentURLRegex, cookie)
+
+	if err != nil {
+		return false, err
+	}
+
+	commentURL := fmt.Sprintf("%s/%s", url, "comment")
+
+	body := NetURL.Values{}
+	body.Set("parent", fmt.Sprintf("%d", id))
+	body.Set("goto", fmt.Sprintf("item?id=%d", id))
+	body.Set("hmac", commentAuth)
+	body.Set("text", content)
+
+	resp, err := PostWithCookie(commentURL, body, cookie)
+
+	if err == nil && resp != nil {
+		return true, nil
+	}
+
+	return false, err
 }
