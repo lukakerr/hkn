@@ -11,11 +11,11 @@ type Updates struct {
 	Profiles []string `json:"profiles"`
 }
 
-// GetUpdates : Get the latest item and profile updates
-func GetUpdates(url string) (Updates, error) {
-	reqURL := fmt.Sprintf("%s/%s", url, "updates") + JSONSuffix
+// Get the latest item and profile updates
+func getUpdates(url string) (Updates, error) {
+	reqURL := fmt.Sprintf("%s/%s", url, "updates") + jsonSuffix
 
-	resp, err := GetBody(reqURL)
+	resp, err := getBody(reqURL)
 
 	var updates Updates
 

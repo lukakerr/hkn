@@ -17,11 +17,11 @@ type User struct {
 	Submitted []int  `json:"submitted"`
 }
 
-// GetUser : Get a user given an id
-func GetUser(id string, url string) (User, error) {
-	reqURL := fmt.Sprintf("%s/%s/%s", url, "user", id) + JSONSuffix
+// Get a user given an id
+func getUser(id string, url string) (User, error) {
+	reqURL := fmt.Sprintf("%s/%s/%s", url, "user", id) + jsonSuffix
 
-	resp, err := GetBody(reqURL)
+	resp, err := getBody(reqURL)
 
 	var user User
 
@@ -33,8 +33,8 @@ func GetUser(id string, url string) (User, error) {
 	return user, err
 }
 
-// Login : Login a user given a username and password
-func Login(username string, password string, url string) (*http.Cookie, error) {
+// Login a user given a username and password
+func login(username string, password string, url string) (*http.Cookie, error) {
 	reqURL := fmt.Sprintf("%s/%s", url, "login")
 
 	body := NetURL.Values{}
@@ -42,7 +42,7 @@ func Login(username string, password string, url string) (*http.Cookie, error) {
 	body.Set("pw", password)
 	body.Set("goto", "news")
 
-	cookie, err := PostAndGetCookie(reqURL, body)
+	cookie, err := postAndGetCookie(reqURL, body)
 
 	return cookie, err
 }

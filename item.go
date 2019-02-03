@@ -37,11 +37,11 @@ const (
 	commentURLRegex = `<input\s+type=['"]hidden['"]\s+name=['"]hmac['"]\s+(?:[^>]*?\s+)?value=['"]([^'"]*)['"]`
 )
 
-// GetItem : Get an item given an id
-func GetItem(id int, url string) (Item, error) {
-	reqURL := fmt.Sprintf("%s/%s/%d", url, "item", id) + JSONSuffix
+// Get an item given an id
+func getItem(id int, url string) (Item, error) {
+	reqURL := fmt.Sprintf("%s/%s/%d", url, "item", id) + jsonSuffix
 
-	resp, err := GetBody(reqURL)
+	resp, err := getBody(reqURL)
 
 	var item Item
 
@@ -53,9 +53,9 @@ func GetItem(id int, url string) (Item, error) {
 	return item, err
 }
 
-// GetItems : Get items given a slice of ids
+// Get items given a slice of ids
 // This function is parallelised and thus does not guarantee order
-func GetItems(ids []int, url string) (Items, error) {
+func getItems(ids []int, url string) (Items, error) {
 	var (
 		items Items
 		wg    sync.WaitGroup
@@ -69,7 +69,7 @@ func GetItems(ids []int, url string) (Items, error) {
 		go func(id int, url string) {
 			defer wg.Done()
 
-			item, err := GetItem(id, url)
+			item, err := getItem(id, url)
 
 			if err != nil {
 				return
@@ -85,11 +85,11 @@ func GetItems(ids []int, url string) (Items, error) {
 	return items, nil
 }
 
-// GetMaxItemID : Get the most recent item id
-func GetMaxItemID(url string) (int, error) {
-	reqURL := fmt.Sprintf("%s/%s", url, "maxitem") + JSONSuffix
+// Get the most recent item id
+func getMaxItemID(url string) (int, error) {
+	reqURL := fmt.Sprintf("%s/%s", url, "maxitem") + jsonSuffix
 
-	resp, err := GetBody(reqURL)
+	resp, err := getBody(reqURL)
 
 	var id int
 
@@ -102,7 +102,7 @@ func GetMaxItemID(url string) (int, error) {
 }
 
 func matchRegexFromBody(url string, regex string, cookie *http.Cookie) (string, error) {
-	resp, err := GetBodyWithCookie(url, cookie)
+	resp, err := getBodyWithCookie(url, cookie)
 
 	if err != nil {
 		return "", err
@@ -132,7 +132,7 @@ func vote(id int, cookie *http.Cookie, url string, voteType string) (bool, error
 	voteURL := fmt.Sprintf("%s/%s", url, voteAuth)
 	unescaped := html.UnescapeString(voteURL)
 
-	resp, err := GetBodyWithCookie(unescaped, cookie)
+	resp, err := getBodyWithCookie(unescaped, cookie)
 
 	if err == nil && resp != nil {
 		return true, nil
@@ -141,18 +141,18 @@ func vote(id int, cookie *http.Cookie, url string, voteType string) (bool, error
 	return false, err
 }
 
-// Upvote : Upvote an item given an id and a cookie
-func Upvote(id int, cookie *http.Cookie, url string) (bool, error) {
+// Upvote an item given an id and a cookie
+func upvote(id int, cookie *http.Cookie, url string) (bool, error) {
 	return vote(id, cookie, url, "up")
 }
 
-// Unvote : Unvote a comment given an id and a cookie
-func Unvote(id int, cookie *http.Cookie, url string) (bool, error) {
+// Unvote a comment given an id and a cookie
+func unvote(id int, cookie *http.Cookie, url string) (bool, error) {
 	return vote(id, cookie, url, "un")
 }
 
-// Comment : Create a comment on an item given an id and content
-func Comment(id int, content string, cookie *http.Cookie, url string) (bool, error) {
+// Create a comment on an item given an id and content
+func comment(id int, content string, cookie *http.Cookie, url string) (bool, error) {
 	if len(content) == 0 {
 		return false, ErrEmptyContent
 	}
@@ -173,7 +173,7 @@ func Comment(id int, content string, cookie *http.Cookie, url string) (bool, err
 	body.Set("hmac", commentAuth)
 	body.Set("text", content)
 
-	resp, err := PostWithCookie(commentURL, body, cookie)
+	resp, err := postWithCookie(commentURL, body, cookie)
 
 	if err == nil && resp != nil {
 		return true, nil

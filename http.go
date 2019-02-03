@@ -45,8 +45,8 @@ func getContent(resp *http.Response) ([]byte, error) {
 	return body, nil
 }
 
-// GetBody : Perform a GET request and return the body as a slice of bytes
-func GetBody(url string) ([]byte, error) {
+// Perform a GET request and return the body as a slice of bytes
+func getBody(url string) ([]byte, error) {
 	resp, err := get(url, nil)
 
 	if err != nil {
@@ -56,8 +56,8 @@ func GetBody(url string) ([]byte, error) {
 	return getContent(resp)
 }
 
-// GetBodyWithCookie : Perform a GET request with a cookie and return the body as a slice of bytes
-func GetBodyWithCookie(url string, cookie *http.Cookie) ([]byte, error) {
+// Perform a GET request with a cookie and return the body as a slice of bytes
+func getBodyWithCookie(url string, cookie *http.Cookie) ([]byte, error) {
 	resp, err := get(url, cookie)
 
 	if err != nil {
@@ -94,8 +94,8 @@ func post(url string, urlEncodedValues NetURL.Values, cookie *http.Cookie) (*htt
 	return resp, nil
 }
 
-// PostWithCookie : Perform a POST request with a cookie
-func PostWithCookie(url string, urlEncodedValues NetURL.Values, cookie *http.Cookie) ([]byte, error) {
+// Perform a POST request with a cookie
+func postWithCookie(url string, urlEncodedValues NetURL.Values, cookie *http.Cookie) ([]byte, error) {
 	resp, err := post(url, urlEncodedValues, cookie)
 
 	if err != nil {
@@ -105,8 +105,8 @@ func PostWithCookie(url string, urlEncodedValues NetURL.Values, cookie *http.Coo
 	return getContent(resp)
 }
 
-// PostAndGetCookie : Perform a POST request and return the first cookie in the response
-func PostAndGetCookie(url string, urlEncodedValues NetURL.Values) (*http.Cookie, error) {
+// Perform a POST request and return the first cookie in the response
+func postAndGetCookie(url string, urlEncodedValues NetURL.Values) (*http.Cookie, error) {
 	resp, err := post(url, urlEncodedValues, nil)
 
 	if err != nil {

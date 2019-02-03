@@ -5,14 +5,14 @@ import (
 	"fmt"
 )
 
-// GetNumber : Given a number a limit and a url, fetch from the url and
+// Given a number a limit and a url, fetch from the url and
 // return the number requested if it is >= 0 and <= limit
-func GetNumber(number int, limit int, url string) ([]int, error) {
+func getNumber(number int, limit int, url string) ([]int, error) {
 	if number > limit || number < 0 {
 		return nil, ErrInvalidNumber
 	}
 
-	resp, err := GetBody(url + JSONSuffix)
+	resp, err := getBody(url + jsonSuffix)
 
 	var top []int
 
@@ -33,38 +33,38 @@ func GetNumber(number int, limit int, url string) ([]int, error) {
 	return top[:number], nil
 }
 
-// GetTopStories : Get top stories given a number
-func GetTopStories(number int, url string) ([]int, error) {
+// Get top stories given a number
+func getTopStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "topstories")
-	return GetNumber(number, 500, resource)
+	return getNumber(number, 500, resource)
 }
 
-// GetNewStories : Get new stories given a number
-func GetNewStories(number int, url string) ([]int, error) {
+// Get new stories given a number
+func getNewStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "newstories")
-	return GetNumber(number, 500, resource)
+	return getNumber(number, 500, resource)
 }
 
-// GetBestStories : Get best stories given a number
-func GetBestStories(number int, url string) ([]int, error) {
+// Get best stories given a number
+func getBestStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "beststories")
-	return GetNumber(number, 500, resource)
+	return getNumber(number, 500, resource)
 }
 
-// GetLatestAskStories : Get latest ask stories given a number
-func GetLatestAskStories(number int, url string) ([]int, error) {
+// Get latest ask stories given a number
+func getLatestAskStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "askstories")
-	return GetNumber(number, 200, resource)
+	return getNumber(number, 200, resource)
 }
 
-// GetLatestShowStories : Get latest show stories given a number
-func GetLatestShowStories(number int, url string) ([]int, error) {
+// Get latest show stories given a number
+func getLatestShowStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "showstories")
-	return GetNumber(number, 200, resource)
+	return getNumber(number, 200, resource)
 }
 
-// GetLatestJobStories : Get latest job stories given a number
-func GetLatestJobStories(number int, url string) ([]int, error) {
+// Get latest job stories given a number
+func getLatestJobStories(number int, url string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", url, "jobstories")
-	return GetNumber(number, 200, resource)
+	return getNumber(number, 200, resource)
 }
