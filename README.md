@@ -1,5 +1,7 @@
 # hkn
 
+[![GoDoc](https://godoc.org/github.com/lukakerr/hkn?status.svg)](https://godoc.org/github.com/lukakerr/hkn)
+
 A go module for interacting with Hacker News.
 
 ### Features
