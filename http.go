@@ -5,7 +5,21 @@ import (
 	"net/http"
 	NetURL "net/url"
 	"strings"
+	"time"
 )
+
+// Create a new HTTP client with sensible options
+func newHTTPClient() *http.Client {
+	return &http.Client{
+		// A 10 second timeout
+		Timeout: time.Second * 10,
+
+		// Don't follow 301 redirects
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+}
 
 // Perform a GET request and return the response
 func get(url string, cookie *http.Cookie) (*http.Response, error) {
@@ -21,7 +35,7 @@ func get(url string, cookie *http.Cookie) (*http.Response, error) {
 		return nil, ErrFetching
 	}
 
-	client := &http.Client{}
+	client := newHTTPClient()
 
 	resp, err := client.Do(req)
 
@@ -79,11 +93,7 @@ func post(url string, urlEncodedValues NetURL.Values, cookie *http.Cookie) (*htt
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Access-Control-Allow-Origin", "*")
 
-	client := &http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		},
-	}
+	client := newHTTPClient()
 
 	resp, err := client.Do(req)
 
