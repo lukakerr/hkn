@@ -5,15 +5,15 @@ import (
 	"fmt"
 )
 
-// Updates : Struct representing profile and item updates
+// Updates represents profile and item updates
 type Updates struct {
 	Items    []int    `json:"items"`
 	Profiles []string `json:"profiles"`
 }
 
 // Get the latest item and profile updates
-func getUpdates(url string) (Updates, error) {
-	reqURL := fmt.Sprintf("%s/%s", url, "updates") + jsonSuffix
+func getUpdates(apiURL string) (Updates, error) {
+	reqURL := fmt.Sprintf("%s/%s", apiURL, "updates") + jsonSuffix
 
 	resp, err := getBody(reqURL)
 

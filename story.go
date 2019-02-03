@@ -34,37 +34,37 @@ func getNumber(number int, limit int, url string) ([]int, error) {
 }
 
 // Get top stories given a number
-func getTopStories(number int, url string) ([]int, error) {
-	resource := fmt.Sprintf("%s/%s", url, "topstories")
+func getTopStories(number int, apiURL string) ([]int, error) {
+	resource := fmt.Sprintf("%s/%s", apiURL, "topstories")
 	return getNumber(number, 500, resource)
 }
 
 // Get new stories given a number
-func getNewStories(number int, url string) ([]int, error) {
-	resource := fmt.Sprintf("%s/%s", url, "newstories")
+func getNewStories(number int, apiURL string) ([]int, error) {
+	resource := fmt.Sprintf("%s/%s", apiURL, "newstories")
 	return getNumber(number, 500, resource)
 }
 
 // Get best stories given a number
-func getBestStories(number int, url string) ([]int, error) {
-	resource := fmt.Sprintf("%s/%s", url, "beststories")
+func getBestStories(number int, apiURL string) ([]int, error) {
+	resource := fmt.Sprintf("%s/%s", apiURL, "beststories")
 	return getNumber(number, 500, resource)
 }
 
 // Get latest ask stories given a number
-func getLatestAskStories(number int, url string) ([]int, error) {
-	resource := fmt.Sprintf("%s/%s", url, "askstories")
+func getLatestAskStories(number int, apiURL string) ([]int, error) {
+	resource := fmt.Sprintf("%s/%s", apiURL, "askstories")
 	return getNumber(number, 200, resource)
 }
 
 // Get latest show stories given a number
-func getLatestShowStories(number int, url string) ([]int, error) {
-	resource := fmt.Sprintf("%s/%s", url, "showstories")
+func getLatestShowStories(number int, apiURL string) ([]int, error) {
+	resource := fmt.Sprintf("%s/%s", apiURL, "showstories")
 	return getNumber(number, 200, resource)
 }
 
 // Get latest job stories given a number
-func getLatestJobStories(number int, url string) ([]int, error) {
-	resource := fmt.Sprintf("%s/%s", url, "jobstories")
+func getLatestJobStories(number int, apiURL string) ([]int, error) {
+	resource := fmt.Sprintf("%s/%s", apiURL, "jobstories")
 	return getNumber(number, 200, resource)
 }

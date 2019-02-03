@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"html"
 	"net/http"
-	NetURL "net/url"
+	"net/url"
 	"regexp"
 	"sync"
 )
 
-// Item : A Hacker News item
+// Item represents a Hacker News item
 type Item struct {
 	ID          int    `json:"id"`
 	Deleted     bool   `json:"deleted"`
@@ -29,7 +29,7 @@ type Item struct {
 	Descendants int    `json:"descendants"`
 }
 
-// Items : An array of items
+// Items represents an array of items
 type Items []Item
 
 const (
@@ -38,8 +38,8 @@ const (
 )
 
 // Get an item given an id
-func getItem(id int, url string) (Item, error) {
-	reqURL := fmt.Sprintf("%s/%s/%d", url, "item", id) + jsonSuffix
+func getItem(id int, apiURL string) (Item, error) {
+	reqURL := fmt.Sprintf("%s/%s/%d", apiURL, "item", id) + jsonSuffix
 
 	resp, err := getBody(reqURL)
 
@@ -55,7 +55,7 @@ func getItem(id int, url string) (Item, error) {
 
 // Get items given a slice of ids
 // This function is parallelised and thus does not guarantee order
-func getItems(ids []int, url string) (Items, error) {
+func getItems(ids []int, apiURL string) (Items, error) {
 	var (
 		items Items
 		wg    sync.WaitGroup
@@ -76,7 +76,7 @@ func getItems(ids []int, url string) (Items, error) {
 			}
 
 			items = append(items, item)
-		}(id, url)
+		}(id, apiURL)
 	}
 
 	// Wait until all threads are done
@@ -86,8 +86,8 @@ func getItems(ids []int, url string) (Items, error) {
 }
 
 // Get the most recent item id
-func getMaxItemID(url string) (int, error) {
-	reqURL := fmt.Sprintf("%s/%s", url, "maxitem") + jsonSuffix
+func getMaxItemID(apiURL string) (int, error) {
+	reqURL := fmt.Sprintf("%s/%s", apiURL, "maxitem") + jsonSuffix
 
 	resp, err := getBody(reqURL)
 
@@ -101,8 +101,8 @@ func getMaxItemID(url string) (int, error) {
 	return id, err
 }
 
-func matchRegexFromBody(url string, regex string, cookie *http.Cookie) (string, error) {
-	resp, err := getBodyWithCookie(url, cookie)
+func matchRegexFromBody(webURL string, regex string, cookie *http.Cookie) (string, error) {
+	resp, err := getBodyWithCookie(webURL, cookie)
 
 	if err != nil {
 		return "", err
@@ -119,8 +119,8 @@ func matchRegexFromBody(url string, regex string, cookie *http.Cookie) (string, 
 	return "", ErrFetchingActionURL
 }
 
-func vote(id int, cookie *http.Cookie, url string, voteType string) (bool, error) {
-	reqURL := fmt.Sprintf("%s/%s?id=%d", url, "item", id)
+func vote(id int, cookie *http.Cookie, webURL string, voteType string) (bool, error) {
+	reqURL := fmt.Sprintf("%s/%s?id=%d", webURL, "item", id)
 	upvoteRegex := fmt.Sprintf(voteURLRegex, voteType, id)
 
 	voteAuth, err := matchRegexFromBody(reqURL, upvoteRegex, cookie)
@@ -129,7 +129,7 @@ func vote(id int, cookie *http.Cookie, url string, voteType string) (bool, error
 		return false, err
 	}
 
-	voteURL := fmt.Sprintf("%s/%s", url, voteAuth)
+	voteURL := fmt.Sprintf("%s/%s", webURL, voteAuth)
 	unescaped := html.UnescapeString(voteURL)
 
 	resp, err := getBodyWithCookie(unescaped, cookie)
@@ -142,22 +142,22 @@ func vote(id int, cookie *http.Cookie, url string, voteType string) (bool, error
 }
 
 // Upvote an item given an id and a cookie
-func upvote(id int, cookie *http.Cookie, url string) (bool, error) {
-	return vote(id, cookie, url, "up")
+func upvote(id int, cookie *http.Cookie, webURL string) (bool, error) {
+	return vote(id, cookie, webURL, "up")
 }
 
 // Unvote a comment given an id and a cookie
-func unvote(id int, cookie *http.Cookie, url string) (bool, error) {
-	return vote(id, cookie, url, "un")
+func unvote(id int, cookie *http.Cookie, webURL string) (bool, error) {
+	return vote(id, cookie, webURL, "un")
 }
 
 // Create a comment on an item given an id and content
-func comment(id int, content string, cookie *http.Cookie, url string) (bool, error) {
+func comment(id int, content string, cookie *http.Cookie, webURL string) (bool, error) {
 	if len(content) == 0 {
 		return false, ErrEmptyContent
 	}
 
-	reqURL := fmt.Sprintf("%s/%s?id=%d", url, "item", id)
+	reqURL := fmt.Sprintf("%s/%s?id=%d", webURL, "item", id)
 
 	commentAuth, err := matchRegexFromBody(reqURL, commentURLRegex, cookie)
 
@@ -165,9 +165,9 @@ func comment(id int, content string, cookie *http.Cookie, url string) (bool, err
 		return false, err
 	}
 
-	commentURL := fmt.Sprintf("%s/%s", url, "comment")
+	commentURL := fmt.Sprintf("%s/%s", webURL, "comment")
 
-	body := NetURL.Values{}
+	body := url.Values{}
 	body.Set("parent", fmt.Sprintf("%d", id))
 	body.Set("goto", fmt.Sprintf("item?id=%d", id))
 	body.Set("hmac", commentAuth)

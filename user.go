@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	NetURL "net/url"
+	"net/url"
 )
 
-// User : Struct representing a Hacker News user
+// User represents a Hacker News user
 type User struct {
 	ID        string `json:"id"`
 	Delay     int    `json:"delay"`
@@ -18,8 +18,8 @@ type User struct {
 }
 
 // Get a user given an id
-func getUser(id string, url string) (User, error) {
-	reqURL := fmt.Sprintf("%s/%s/%s", url, "user", id) + jsonSuffix
+func getUser(id string, apiURL string) (User, error) {
+	reqURL := fmt.Sprintf("%s/%s/%s", apiURL, "user", id) + jsonSuffix
 
 	resp, err := getBody(reqURL)
 
@@ -34,10 +34,10 @@ func getUser(id string, url string) (User, error) {
 }
 
 // Login a user given a username and password
-func login(username string, password string, url string) (*http.Cookie, error) {
-	reqURL := fmt.Sprintf("%s/%s", url, "login")
+func login(username string, password string, webURL string) (*http.Cookie, error) {
+	reqURL := fmt.Sprintf("%s/%s", webURL, "login")
 
-	body := NetURL.Values{}
+	body := url.Values{}
 	body.Set("acct", username)
 	body.Set("pw", password)
 	body.Set("goto", "news")

@@ -3,7 +3,7 @@ package hkn
 import (
 	"io/ioutil"
 	"net/http"
-	NetURL "net/url"
+	"net/url"
 	"strings"
 	"time"
 )
@@ -22,9 +22,9 @@ func newHTTPClient() *http.Client {
 }
 
 // Perform a GET request and return the response
-func get(url string, cookie *http.Cookie) (*http.Response, error) {
+func get(resource string, cookie *http.Cookie) (*http.Response, error) {
 	// Build the request
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", resource, nil)
 	req.Close = true
 
 	if cookie != nil {
@@ -60,8 +60,8 @@ func getContent(resp *http.Response) ([]byte, error) {
 }
 
 // Perform a GET request and return the body as a slice of bytes
-func getBody(url string) ([]byte, error) {
-	resp, err := get(url, nil)
+func getBody(resource string) ([]byte, error) {
+	resp, err := get(resource, nil)
 
 	if err != nil {
 		return nil, err
@@ -71,8 +71,8 @@ func getBody(url string) ([]byte, error) {
 }
 
 // Perform a GET request with a cookie and return the body as a slice of bytes
-func getBodyWithCookie(url string, cookie *http.Cookie) ([]byte, error) {
-	resp, err := get(url, cookie)
+func getBodyWithCookie(resource string, cookie *http.Cookie) ([]byte, error) {
+	resp, err := get(resource, cookie)
 
 	if err != nil {
 		return nil, err
@@ -82,8 +82,8 @@ func getBodyWithCookie(url string, cookie *http.Cookie) ([]byte, error) {
 }
 
 // Perform a POST request and return the response
-func post(url string, urlEncodedValues NetURL.Values, cookie *http.Cookie) (*http.Response, error) {
-	req, err := http.NewRequest("POST", url, strings.NewReader(urlEncodedValues.Encode()))
+func post(resource string, urlEncodedValues url.Values, cookie *http.Cookie) (*http.Response, error) {
+	req, err := http.NewRequest("POST", resource, strings.NewReader(urlEncodedValues.Encode()))
 	req.Close = true
 
 	if cookie != nil {
@@ -105,8 +105,8 @@ func post(url string, urlEncodedValues NetURL.Values, cookie *http.Cookie) (*htt
 }
 
 // Perform a POST request with a cookie
-func postWithCookie(url string, urlEncodedValues NetURL.Values, cookie *http.Cookie) ([]byte, error) {
-	resp, err := post(url, urlEncodedValues, cookie)
+func postWithCookie(resource string, urlEncodedValues url.Values, cookie *http.Cookie) ([]byte, error) {
+	resp, err := post(resource, urlEncodedValues, cookie)
 
 	if err != nil {
 		return nil, err
@@ -116,8 +116,8 @@ func postWithCookie(url string, urlEncodedValues NetURL.Values, cookie *http.Coo
 }
 
 // Perform a POST request and return the first cookie in the response
-func postAndGetCookie(url string, urlEncodedValues NetURL.Values) (*http.Cookie, error) {
-	resp, err := post(url, urlEncodedValues, nil)
+func postAndGetCookie(resource string, urlEncodedValues url.Values) (*http.Cookie, error) {
+	resp, err := post(resource, urlEncodedValues, nil)
 
 	if err != nil {
 		return &http.Cookie{}, err
