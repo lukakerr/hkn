@@ -54,7 +54,7 @@ func getItem(id int, apiURL string) (Item, error) {
 }
 
 // Get items given a slice of ids
-// This function is parallelised and thus does not guarantee order
+// This function is concurrent and thus does not guarantee order
 func getItems(ids []int, apiURL string) (Items, error) {
 	var (
 		items Items
