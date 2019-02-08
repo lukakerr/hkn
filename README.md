@@ -17,14 +17,23 @@ An item refers to either a story, comment, ask, job, poll or poll part
 - [x] Get top 200 ask, show and job stories (or a number >= 0, <= 200)
 - [x] Get changed items and profiles
 - [x] Get a user
+- [ ] Get a user's submissions
+- [ ] Get a user's comments
+- [ ] Get a user's hidden items
+- [ ] Get a user's upvoted items
+- [ ] Get a user's favorited items
 - [x] Login a user
 - [x] Upvote an item
 - [x] Unvote a comment
 - [ ] Downvote a comment
-- [ ] Create a story
+- [x] Create a story
 - [ ] Create a poll
 - [x] Create a comment
 - [ ] Flag an item
+- [ ] Hide an item
+- [ ] Favorite an item
+- [ ] Edit an item
+- [ ] Delete an item
 - [ ] Search
   - [ ] Full text
   - [ ] By tag
@@ -178,6 +187,28 @@ unvoted, err := client.Unvote(8869, cookie)
 // Returns (bool, error)
 content := "Really cool."
 commented, err := client.Comment(8869, content, cookie)
+```
+
+**Create a story with a title and URL**
+
+> A cookie is required to create a story, get this from logging in
+
+```go
+// Returns (bool, error)
+title := "A title."
+URL := "https://a.url.com"
+created, err := client.CreateStoryWithURL(title, URL, cookie)
+```
+
+**Create a story with a title and text**
+
+> A cookie is required to create a story, get this from logging in
+
+```go
+// Returns (bool, error)
+title := "A title."
+text := "Some text."
+created, err := client.CreateStoryWithText(title, text, cookie)
 ```
 
 ### Running

@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -132,4 +133,22 @@ func postAndGetCookie(resource string, urlEncodedValues url.Values) (*http.Cooki
 	}
 
 	return cookies[0], nil
+}
+
+func matchRegexFromBody(webURL string, regex string, cookie *http.Cookie) (string, error) {
+	resp, err := getBodyWithCookie(webURL, cookie)
+
+	if err != nil {
+		return "", err
+	}
+
+	r := regexp.MustCompile(regex)
+
+	result := r.FindStringSubmatch(string(resp))
+
+	if len(result) == 2 {
+		return result[1], nil
+	}
+
+	return "", ErrFetchingActionURL
 }

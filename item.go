@@ -6,7 +6,6 @@ import (
 	"html"
 	"net/http"
 	"net/url"
-	"regexp"
 	"sync"
 )
 
@@ -99,24 +98,6 @@ func getMaxItemID(apiURL string) (int, error) {
 
 	err = json.Unmarshal(resp, &id)
 	return id, err
-}
-
-func matchRegexFromBody(webURL string, regex string, cookie *http.Cookie) (string, error) {
-	resp, err := getBodyWithCookie(webURL, cookie)
-
-	if err != nil {
-		return "", err
-	}
-
-	r := regexp.MustCompile(regex)
-
-	result := r.FindStringSubmatch(string(resp))
-
-	if len(result) == 2 {
-		return result[1], nil
-	}
-
-	return "", ErrFetchingActionURL
 }
 
 func vote(id int, cookie *http.Cookie, webURL string, voteType string) (bool, error) {

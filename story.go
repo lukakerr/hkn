@@ -3,6 +3,12 @@ package hkn
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/url"
+)
+
+const (
+	createStoryFormRegex = `<input\stype=['"]hidden['"]\s+name=['"]fnid['"]\s+(?:[^>]*?\s+)?value=['"]([^'"]*)['"]`
 )
 
 // Given a number a limit and a url, fetch from the url and
@@ -67,4 +73,41 @@ func getLatestShowStories(number int, apiURL string) ([]int, error) {
 func getLatestJobStories(number int, apiURL string) ([]int, error) {
 	resource := fmt.Sprintf("%s/%s", apiURL, "jobstories")
 	return getNumber(number, 200, resource)
+}
+
+// Create a story given a title, content, cookie and content key (either "text" or "url")
+func createStory(title string, content string, cookie *http.Cookie, webURL string, contentKey string) (bool, error) {
+	if len(title) == 0 {
+		return false, ErrEmptyTitle
+	}
+
+	submitFormURL := fmt.Sprintf("%s/%s", webURL, "submit")
+	fnID, err := matchRegexFromBody(submitFormURL, createStoryFormRegex, cookie)
+
+	if err != nil {
+		return false, err
+	}
+
+	submitURL := fmt.Sprintf("%s/%s", webURL, "r")
+
+	body := url.Values{}
+	body.Set("fnid", fnID)
+	body.Set("fnop", "submit-page")
+	body.Set("title", title)
+
+	if contentKey == "text" {
+		body.Set("url", "")
+		body.Set("text", content)
+	} else if contentKey == "url" {
+		body.Set("url", content)
+		body.Set("text", "")
+	}
+
+	resp, err := postWithCookie(submitURL, body, cookie)
+
+	if err == nil && resp != nil {
+		return true, nil
+	}
+
+	return false, err
 }

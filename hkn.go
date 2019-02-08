@@ -58,6 +58,9 @@ var (
 	// ErrEmptyContent represents an error that content provided is empty
 	ErrEmptyContent = errors.New("content is empty")
 
+	// ErrEmptyTitle represents an error that a title provided is empty
+	ErrEmptyTitle = errors.New("title is empty")
+
 	// ErrInvalidAuth represents an error authenticating
 	ErrInvalidAuth = errors.New("invalid username or password")
 
@@ -141,4 +144,14 @@ func (c *Client) Unvote(id int, cookie *http.Cookie) (bool, error) {
 // Comment creates a comment on an item given an id, content and cookie, and returns whether the comment was successful
 func (c *Client) Comment(id int, content string, cookie *http.Cookie) (bool, error) {
 	return comment(id, content, cookie, c.WebURL)
+}
+
+// CreateStoryWithURL creates a story with a mandatory title and optional url
+func (c *Client) CreateStoryWithURL(title string, url string, cookie *http.Cookie) (bool, error) {
+	return createStory(title, url, cookie, c.WebURL, "url")
+}
+
+// CreateStoryWithText creates a story with a mandatory title and optional text body
+func (c *Client) CreateStoryWithText(title string, text string, cookie *http.Cookie) (bool, error) {
+	return createStory(title, text, cookie, c.WebURL, "text")
 }

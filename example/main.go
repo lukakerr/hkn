@@ -28,6 +28,8 @@ func main() {
 	// upvote(client)
 	// unvote(client)
 	// comment(client)
+	// createStoryWithURL(client)
+	// createStoryWithText(client)
 }
 
 func getItem(client *hkn.Client) {
@@ -218,4 +220,44 @@ func comment(client *hkn.Client) {
 	}
 
 	fmt.Println(commented)
+}
+
+func createStoryWithURL(client *hkn.Client) {
+	cookie, err := client.Login("username", "password")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	title := "test"
+	URL := "https://github.com"
+	created, err := client.CreateStoryWithURL(title, URL, cookie)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(created)
+}
+
+func createStoryWithText(client *hkn.Client) {
+	cookie, err := client.Login("username", "password")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	title := "A title"
+	text := "Some text"
+	created, err := client.CreateStoryWithText(title, text, cookie)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(created)
 }
