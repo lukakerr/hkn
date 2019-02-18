@@ -85,6 +85,11 @@ func getBodyWithCookie(resource string, cookie *http.Cookie) ([]byte, error) {
 // Perform a POST request and return the response
 func post(resource string, urlEncodedValues url.Values, cookie *http.Cookie) (*http.Response, error) {
 	req, err := http.NewRequest("POST", resource, strings.NewReader(urlEncodedValues.Encode()))
+
+	if err != nil {
+		return nil, err
+	}
+
 	req.Close = true
 
 	if cookie != nil {
