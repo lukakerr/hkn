@@ -1,5 +1,6 @@
 # hkn
 
+<a href="https://goreportcard.com/report/github.com/lukakerr/hkn"><img src="https://goreportcard.com/badge/github.com/lukakerr/hkn"></a>
 [![GoDoc](https://godoc.org/github.com/lukakerr/hkn?status.svg)](https://godoc.org/github.com/lukakerr/hkn)
 
 A go module for interacting with Hacker News.
